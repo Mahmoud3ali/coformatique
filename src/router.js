@@ -4,9 +4,11 @@ const { OK } = require("http-status");
 const { version } = require("../package.json");
 
 const UsersRouter = require("./routes/users");
+const AuthRouter = require("./routes/auth");
 
 const router = new Router();
 router.use("/users", UsersRouter);
+router.use("/auth", AuthRouter);
 
 // maintenance endpoint
 router.get("/system-info", (req, res, next) =>

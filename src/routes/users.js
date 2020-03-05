@@ -56,7 +56,9 @@ router.post(
       res.status(CREATED).send({ message: "Created Successfully" });
     } catch (err) {
       console.error(err.message);
-      res.status(INTERNAL_SERVER_ERROR).send({ message: "Server error" });
+      res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Internal error, please report" });
     }
   }
 );
