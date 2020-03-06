@@ -5,14 +5,14 @@ const { USERS_MODEL } = require("./User");
 const MessageSchema = new mongoose.Schema({
   creatorId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: USERS_MODEL,
+    ref: 'user',
     index: true,
     required: true
   },
 
   targetId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: USERS_MODEL,
+    ref: 'user',
     index: true,
     required: true
   },

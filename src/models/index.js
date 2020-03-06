@@ -1,5 +1,7 @@
 const User = require("./User");
+const Message = require("./Message");
 
 module.exports = {
-  User
+  User,
+  Message,
 };
