@@ -112,7 +112,12 @@ router.patch(
     targetMessage.title = title || targetMessage.title;
     targetMessage.body = body || targetMessage.body;
 
-    targetMessage.save();
+    try {
+      await targetMessage.save();
+    }
+    catch (err) {
+      return res.status(BAD_REQUEST).send({ message: err.message });
+    }
 
     res.status(OK).send({ message: "Updated Successfully" });
   }
