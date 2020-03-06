@@ -19,7 +19,9 @@ const MessageSchema = new mongoose.Schema({
 
   title: { type: String, required: true },
 
-  body: { type: String, required: false }
+  body: { type: String, required: false },
+
+  createdAt: { type: Date, default: () => new Date(), required: true }
 });
 
 module.exports = User = mongoose.model("message", MessageSchema);
