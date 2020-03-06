@@ -9,7 +9,7 @@ const {
 } = require("http-status");
 const { check, param, validationResult } = require("express-validator");
 const authorize = require("../middleware/authorize");
-const { Message, User } = require("../models");
+const { Message, User, Reply } = require("../models");
 
 // @route    POST api/messages
 // @desc     Send a new message
@@ -150,7 +150,7 @@ router.delete(
       //If there's no such message
       return res
         .status(BAD_REQUEST)
-        .send({ message: "Cannot find your message" });
+        .send({ message: "Cannot find this message" });
     }
 
     if (targetMessage.creatorId != userId) {
@@ -169,6 +169,66 @@ router.delete(
     }
 
     res.status(OK).send({ message: "Deleted Successfully" });
+  }
+);
+
+// @route    POST api/messages/:id/reply
+// @desc     Reply to a message
+// @access   Private
+router.post(
+  "/:id/reply",
+  authorize,
+  [
+    check("parentMessageId", "Parent message must be a valid ID")
+      .if((value, { req }) => req.body.parentMessageId)
+      .isMongoId(),
+    check("body", "Message body is required")
+      .not()
+      .isEmpty()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(BAD_REQUEST).send({
+        message: { errors: errors.array() }
+      });
+    }
+
+    const { body } = req.body;
+
+    const userId = req.user.id;
+    const parentMessageId = req.params.id;
+
+    const parentMessage = await Message.findById(parentMessageId);
+
+    if (!parentMessage) {
+      //If there's no such message
+      return res
+        .status(BAD_REQUEST)
+        .send({ message: "Cannot find this message" });
+    }
+
+    if (parentMessage.targetId != userId) {
+      //If the current user isn't the receiver
+      return res
+        .status(UNAUTHORIZED)
+        .send({ message: "You cannot reply to this message" });
+    }
+
+    try {
+      const reply = new Reply({
+        parentMessageId,
+        body
+      });
+
+      await reply.save();
+
+      res.status(OK).send({ message: "Reply sent" });
+    } catch (err) {
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Internal error, please report" });
+    }
   }
 );
 
