@@ -1,12 +1,9 @@
 const express = require("express");
 const router = express.Router();
-const {
-  BAD_REQUEST,
-  CREATED,
-} = require("http-status");
-const { check, validationResult } = require("express-validator");
+const { BAD_REQUEST, CREATED, UNAUTHORIZED, OK } = require("http-status");
+const { check, param, validationResult } = require("express-validator");
 const authorize = require("../middleware/authorize");
-const { Message } = require("../models");
+const { Message, User } = require("../models");
 
 // @route    POST api/messages
 // @desc     Send a new message
@@ -18,7 +15,7 @@ router.post(
     check("targetId", "Target user is required")
       .not()
       .isEmpty(),
-    check("targetId", "Target user must be a valid mongoId").isMongoId(),
+    check("targetId", "Target user must be a valid ID").isMongoId(),
     check("title", "Message title is required")
       .not()
       .isEmpty(),
@@ -53,6 +50,71 @@ router.post(
     await message.save();
 
     res.status(CREATED).send({ message: "Created Successfully" });
+  }
+);
+
+// @route    PATCH api/messages/:id
+// @desc     Edit a message
+// @access   Private
+router.patch(
+  "/:id",
+  authorize,
+  [
+    check("targetId", "Target user must be a valid ID")
+      .if((value, { req }) => req.body.targetId)
+      .isMongoId(),
+    param("id", "Target message must be a valid ID").isMongoId()
+  ],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(BAD_REQUEST).send({
+        message: { errors: errors.array() }
+      });
+    }
+
+    const { targetId, title, body } = req.body;
+    const userId = req.user.id;
+    const messageId = req.params.id;
+
+    const targetMessage = await Message.findById(messageId);
+
+    if (!targetMessage) {
+      //If there's no such message
+      return res
+        .status(BAD_REQUEST)
+        .send({ message: "Cannot find your message" });
+    }
+
+    if(targetId === userId) {
+      return res
+        .status(BAD_REQUEST)
+        .send({ message: "You can't send messages to yourself" });
+    }
+
+    const target = await User.findById(targetId);
+
+    if(!target) {
+      //If there's no such user
+      return res
+        .status(BAD_REQUEST)
+        .send({ message: "Invalid targetId" });
+    }
+
+    if (targetMessage.creatorId != userId) {
+      //If the current user isn't the author
+      return res
+        .status(UNAUTHORIZED)
+        .send({ message: "You cannot edit this message" });
+    }
+
+    targetMessage.targetId = targetId || targetMessage.targetId;
+    targetMessage.title = title || targetMessage.title;
+    targetMessage.body = body || targetMessage.body;
+
+    targetMessage.save();
+
+    res.status(OK).send({ message: "Updated Successfully" });
   }
 );
 

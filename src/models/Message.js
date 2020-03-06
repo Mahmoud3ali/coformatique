@@ -1,19 +1,15 @@
 const mongoose = require("mongoose");
 
-const { USERS_MODEL } = require("./User");
-
 const MessageSchema = new mongoose.Schema({
   creatorId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'user',
-    index: true,
     required: true
   },
 
   targetId: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'user',
-    index: true,
+    ref: "user",
     required: true
   },
 
