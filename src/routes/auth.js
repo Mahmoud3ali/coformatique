@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const { BAD_REQUEST, OK, INTERNAL_SERVER_ERROR } = require("http-status");
 const { JWT_SECRET } = process.env;
 const { check, validationResult } = require("express-validator");
+const { User } = require("../models");
 
 // @route    POST api/auth
 // @desc     Authenticate user & get token
