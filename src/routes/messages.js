@@ -1,6 +1,12 @@
 const express = require("express");
 const router = express.Router();
-const { BAD_REQUEST, CREATED, UNAUTHORIZED, OK } = require("http-status");
+const {
+  BAD_REQUEST,
+  CREATED,
+  UNAUTHORIZED,
+  OK,
+  INTERNAL_SERVER_ERROR
+} = require("http-status");
 const { check, param, validationResult } = require("express-validator");
 const authorize = require("../middleware/authorize");
 const { Message, User } = require("../models");
@@ -86,7 +92,7 @@ router.patch(
         .send({ message: "Cannot find your message" });
     }
 
-    if(targetId === userId) {
+    if (targetId === userId) {
       return res
         .status(BAD_REQUEST)
         .send({ message: "You can't send messages to yourself" });
@@ -94,11 +100,9 @@ router.patch(
 
     const target = await User.findById(targetId);
 
-    if(!target) {
+    if (!target) {
       //If there's no such user
-      return res
-        .status(BAD_REQUEST)
-        .send({ message: "Invalid targetId" });
+      return res.status(BAD_REQUEST).send({ message: "Invalid targetId" });
     }
 
     if (targetMessage.creatorId != userId) {
@@ -114,12 +118,57 @@ router.patch(
 
     try {
       await targetMessage.save();
-    }
-    catch (err) {
+    } catch (err) {
       return res.status(BAD_REQUEST).send({ message: err.message });
     }
 
     res.status(OK).send({ message: "Updated Successfully" });
+  }
+);
+
+// @route    DELETE api/messages/:id
+// @desc     Delete a message
+// @access   Private
+router.delete(
+  "/:id",
+  authorize,
+  [param("id", "Target message must be a valid ID").isMongoId()],
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(BAD_REQUEST).send({
+        message: { errors: errors.array() }
+      });
+    }
+
+    const userId = req.user.id;
+    const messageId = req.params.id;
+
+    const targetMessage = await Message.findById(messageId);
+
+    if (!targetMessage) {
+      //If there's no such message
+      return res
+        .status(BAD_REQUEST)
+        .send({ message: "Cannot find your message" });
+    }
+
+    if (targetMessage.creatorId != userId) {
+      //If the current user isn't the author
+      return res
+        .status(UNAUTHORIZED)
+        .send({ message: "You cannot edit this message" });
+    }
+
+    try {
+      await Message.findByIdAndDelete(targetMessage._id);
+    } catch (err) {
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Internal error, please report" });
+    }
+
+    res.status(OK).send({ message: "Deleted Successfully" });
   }
 );
 
