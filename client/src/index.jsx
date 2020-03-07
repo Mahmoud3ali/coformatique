@@ -9,17 +9,15 @@ import {
 import { MuiThemeProvider } from "@material-ui/core/styles";
 
 import { App } from "./components";
-// import NotFound from "./common/components/NotFound";
 
 import * as serviceWorker from "./serviceWorker";
 
-// import theme from "./common/assets/theme";
+import theme from "./assets/theme";
 
 let AppWrapper = props => {
   return (
     <React.Fragment>
       <Switch>
-        {/* <Route path="/not-found" component={NotFound} /> */}
         <Route path="/" component={App} />
       </Switch>
     </React.Fragment>
@@ -28,11 +26,11 @@ let AppWrapper = props => {
 
 AppWrapper = withRouter(AppWrapper);
 ReactDOM.render(
-  // <MuiThemeProvider theme={theme}>
+  <MuiThemeProvider theme={theme}>
     <Router>
       <AppWrapper />
-    </Router>,
-  // </MuiThemeProvider>,
+    </Router>
+  </MuiThemeProvider>,
   document.getElementById("root")
 );
 serviceWorker.unregister();
