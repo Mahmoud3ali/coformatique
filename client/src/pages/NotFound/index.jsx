@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 
 import { Grid, Typography, Button, withStyles } from "@material-ui/core";
 
-const NotFound = ({ history, classes }) => (
+const NotFoundPage = ({ history, classes }) => (
   <Grid container direction="column" alignItems="center">
     <Grid item>
       <Typography
@@ -28,9 +28,9 @@ const styles = () => ({
   }
 });
 
-NotFound.propTypes = {
+NotFoundPage.propTypes = {
   classes: PropTypes.shape().isRequired,
   history: PropTypes.shape().isRequired
 };
 
-export default withStyles(styles)(withRouter(NotFound));
+export default withStyles(styles)(withRouter(NotFoundPage));

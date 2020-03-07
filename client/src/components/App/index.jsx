@@ -1,12 +1,12 @@
 import React from "react";
 import { Switch, Route } from "react-router-dom";
 
-import { LoginScreen, NotFoundScreen } from "../../pages";
+import { LoginPage, NotFoundPage } from "../../pages";
 const App = () => {
   return (
     <Switch>
-      <Route exact path={`/`} component={LoginScreen} />
-      <Route component={NotFoundScreen} />
+      <Route exact path={`/`} component={LoginPage} />
+      <Route component={NotFoundPage} />
     </Switch>
   );
 };

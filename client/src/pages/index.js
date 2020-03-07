@@ -1,2 +1,2 @@
-export { default as LoginScreen } from './Login';
-export { default as NotFoundScreen } from './NotFound';
+export { default as LoginPage } from './Login';
+export { default as NotFoundPage } from './NotFound';

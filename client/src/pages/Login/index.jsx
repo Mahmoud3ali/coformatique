@@ -8,7 +8,7 @@ import {
   Button
 } from "@material-ui/core";
 
-const LoginScreen = ({ classes }) => {
+const LoginPage = ({ classes }) => {
   const [userLoginData, setLoginData] = useState({
     email: "",
     password: ""
@@ -96,4 +96,4 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(LoginScreen);
+export default withStyles(styles)(LoginPage);
