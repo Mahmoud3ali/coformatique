@@ -1,43 +1,57 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { withRouter } from "react-router-dom";
-import jwtDecode from "jwt-decode";
 
-import { Typography, Grid, withStyles } from "@material-ui/core";
+import { Typography, Grid, withStyles, Button } from "@material-ui/core";
 
-import { isUserAuthenticated } from "../../helpers";
+import { useUserData } from "../../hooks";
+import { MessageDialogue } from "../../components";
+import { MessagesActions } from "../../api";
 
 const HomePage = ({ classes, history }) => {
-  // using state since the app has only one page.
-  const [user, setUser] = useState();
+  const [userData] = useUserData(() => history.push("/"));
 
-  useEffect(() => {
-    if (isUserAuthenticated()) {
-      const token = localStorage.getItem("jwtToken");
-      setUser(jwtDecode(token).user);
-    } else {
-      history.push("/");
-    }
-  }, []);
+  const [isCreateOpened, setIsCreateOpened] = useState(false);
 
   return (
-    <Grid container direction="column" alignItems="stretch" spacing={10}>
-      <Grid item align="center">
-        <Typography variant="h2"> {`Hello ${user?.name}`} </Typography>
-      </Grid>
-      <Grid container justify="center">
-        <Grid item xs={6}>
-          <Grid
-            container
-            direction="column"
-            alignItems="stretch"
-            className={classes.messagesContainer}
-          >
-            <Grid item>HEYYE</Grid>
+    <>
+      {isCreateOpened && (
+        <MessageDialogue
+          dialogOpened={isCreateOpened}
+          handleClose={() => setIsCreateOpened(false)}
+          handleConfirm={data =>
+            MessagesActions.createMessage({
+              messageData: data,
+              callback: () => setIsCreateOpened(false)
+            })
+          }
+        />
+      )}
+      <Grid container direction="column" alignItems="stretch" spacing={10}>
+        <Grid item align="center">
+          <Typography variant="h2"> {`Hello ${userData?.name}`} </Typography>
+        </Grid>
+        <Grid container justify="center">
+          <Grid item xs={6}>
+            <Grid
+              container
+              direction="column"
+              alignItems="stretch"
+              className={classes.messagesContainer}
+            >
+              <Grid item align="right">
+                <Button
+                  variant="outlined"
+                  onClick={() => setIsCreateOpened(true)}
+                >
+                  <Typography variant="body1">Create new message </Typography>
+                </Button>
+              </Grid>
+            </Grid>
           </Grid>
         </Grid>
       </Grid>
-    </Grid>
+    </>
   );
 };
 
@@ -45,7 +59,7 @@ const styles = theme => ({
   messagesContainer: {
     borderWidth: "2px",
     borderStyle: "solid",
-    padding: theme.spacing(5)
+    padding: theme.spacing(1),
   }
 });
 
