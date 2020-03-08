@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
+import { withRouter } from "react-router-dom";
 
 import {
   Grid,
@@ -8,11 +10,14 @@ import {
   Button
 } from "@material-ui/core";
 
-const LoginPage = ({ classes }) => {
-  const [userLoginData, setLoginData] = useState({
+import { AuthActions } from "../../api";
+
+const LoginPage = ({ history, classes }) => {
+  const [userData, setUserData] = useState({
     email: "",
     password: ""
   });
+
   return (
     <Grid
       container
@@ -36,9 +41,9 @@ const LoginPage = ({ classes }) => {
           placeholder="Email"
           type="email"
           fullWidth
-          value={userLoginData.email}
+          value={userData.email}
           onChange={e => {
-            setLoginData({ ...userLoginData, email: e.target.value });
+            setUserData({ ...userData, email: e.target.value });
           }}
           variant="outlined"
           autoComplete="email"
@@ -57,10 +62,10 @@ const LoginPage = ({ classes }) => {
           placeholder="Password"
           type="password"
           fullWidth
-          value={userLoginData.password}
+          value={userData.password}
           onChange={e => {
-            setLoginData({
-              ...userLoginData,
+            setUserData({
+              ...userData,
               password: e.target.value
             });
           }}
@@ -77,7 +82,17 @@ const LoginPage = ({ classes }) => {
         />
       </Grid>
       <Grid item align="center">
-        <Button variant="outlined" onClick={() => {}}>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            AuthActions.loginUser({
+              userData,
+              callback: () => {
+                history.push("/home");
+              }
+            });
+          }}
+        >
           Login
         </Button>
       </Grid>
@@ -96,4 +111,9 @@ const styles = theme => ({
   }
 });
 
-export default withStyles(styles)(LoginPage);
+LoginPage.propTypes = {
+  classes: PropTypes.shape().isRequired,
+  history: PropTypes.shape().isRequired
+};
+
+export default withStyles(styles)(withRouter(LoginPage));
