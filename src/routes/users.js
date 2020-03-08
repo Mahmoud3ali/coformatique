@@ -2,12 +2,14 @@ const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcryptjs");
 const {
+  OK,
   BAD_REQUEST,
   CONFLICT,
   CREATED,
   INTERNAL_SERVER_ERROR
 } = require("http-status");
 const { check, validationResult } = require("express-validator");
+const authorize = require("../middleware/authorize");
 
 const { User } = require("../models");
 
@@ -62,5 +64,20 @@ router.post(
     }
   }
 );
+
+// @route    GET api/users
+// @desc     List all users
+// @access   Private
+router.get("/", authorize, async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.status(OK).send(users);
+  } catch (err) {
+    console.error(err.message);
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .send({ message: "Internal error, please report" });
+  }
+});
 
 module.exports = router;
