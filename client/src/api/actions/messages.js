@@ -9,6 +9,16 @@ const createMessage = async ({ messageData, callback }) => {
   }
 };
 
+const listMessages = async ({ callback }) => {
+  try {
+    await MessagesServices.listMessages();
+    if (callback) callback();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export default {
-  createMessage
+  createMessage,
+  listMessages
 };

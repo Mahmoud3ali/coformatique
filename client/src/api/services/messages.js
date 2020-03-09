@@ -5,6 +5,12 @@ async function createMessage({ messageData }) {
   return response;
 }
 
+async function listMessages() {
+  const response = await http.get(`api/messages`);
+  return response;
+}
+
 export default {
-  createMessage
+  createMessage,
+  listMessages
 };
