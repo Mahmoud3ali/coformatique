@@ -5,6 +5,12 @@ async function listUsers() {
   return response;
 }
 
+async function createUser({ userData }) {
+  const response = await http.post(`api/users`, userData);
+  return response;
+}
+
 export default {
-  listUsers
+  listUsers,
+  createUser
 };

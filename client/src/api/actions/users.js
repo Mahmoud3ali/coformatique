@@ -9,6 +9,16 @@ const listUsers = async ({ callback }) => {
   }
 };
 
+const createUser = async ({ userData, callback }) => {
+  try {
+    await UsersServices.createUser({ userData });
+    if (callback) callback();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 export default {
-  listUsers
+  listUsers,
+  createUser
 };
