@@ -5,6 +5,11 @@ async function createMessage({ messageData }) {
   return response;
 }
 
+async function editMessage({ messageId, messageData }) {
+  const response = await http.patch(`api/messages/${messageId}`, messageData);
+  return response;
+}
+
 async function listMessages() {
   http.setJwt(localStorage.getItem("jwtToken"));
   const response = await http.get(`api/messages`);
@@ -13,5 +18,6 @@ async function listMessages() {
 
 export default {
   createMessage,
+  editMessage,
   listMessages
 };
