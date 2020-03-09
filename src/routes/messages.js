@@ -65,10 +65,16 @@ router.post(
 router.get("/", authorize, async (req, res) => {
   try {
     const userId = req.user.id;
-    const messages = await Message.find({ targetId: userId }).populate(
-      "targetId creatorId",
-      "name _id"
-    );
+    const messages = await Message.find({
+      $or: [
+        {
+          targetId: userId
+        },
+        {
+          creatorId: userId
+        }
+      ]
+    }).populate("targetId creatorId", "name _id");
     res.status(OK).send(messages);
   } catch (err) {
     console.error(err.message);
