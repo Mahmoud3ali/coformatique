@@ -16,6 +16,7 @@ import { useUserData } from "../../hooks";
 
 const MessageDialogue = ({
   reply,
+  data,
   dialogOpened,
   handleClose,
   handleConfirm,
@@ -23,10 +24,10 @@ const MessageDialogue = ({
 }) => {
   const [userData] = useUserData(() => null);
 
-  const [target, setTarget] = useState("none");
+  const [target, setTarget] = useState(data?.target ? data.target : "none");
   const [users, setUsers] = useState();
-  const [body, setBody] = useState("");
-  const [title, setTitle] = useState("");
+  const [body, setBody] = useState(data?.body ? data.body : "");
+  const [title, setTitle] = useState(data?.title ? data.title : "");
 
   useEffect(() => {
     UsersActions.listUsers({ callback: setUsers });
@@ -132,6 +133,7 @@ MessageDialogue.propTypes = {
   dialogOpened: PropTypes.bool.isRequired,
   handleClose: PropTypes.func.isRequired,
   handleConfirm: PropTypes.func.isRequired,
+  data: PropTypes.shape().isRequired,
   classes: PropTypes.shape().isRequired
 };
 
