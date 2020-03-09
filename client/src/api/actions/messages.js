@@ -27,6 +27,15 @@ const editMessage = async ({ messageId, messageData, callback }) => {
   }
 };
 
+const deleteMessage = async ({ messageId, callback }) => {
+  try {
+    await MessagesServices.deleteMessage({ messageId });
+    if (callback) callback();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const listMessages = async ({ callback }) => {
   try {
     const { data } = await MessagesServices.listMessages();
@@ -40,5 +49,6 @@ export default {
   createMessage,
   createMessageReply,
   editMessage,
+  deleteMessage,
   listMessages
 };

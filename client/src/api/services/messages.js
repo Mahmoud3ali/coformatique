@@ -15,6 +15,11 @@ async function editMessage({ messageId, messageData }) {
   return response;
 }
 
+async function deleteMessage({messageId}) {
+  const response = await http.delete(`api/messages/${messageId}`);
+  return response;
+}
+
 async function listMessages() {
   http.setJwt(localStorage.getItem("jwtToken"));
   const response = await http.get(`api/messages`);
@@ -25,5 +30,6 @@ export default {
   createMessage,
   createMessageReply,
   editMessage,
+  deleteMessage,
   listMessages
 };
