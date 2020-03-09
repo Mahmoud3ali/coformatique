@@ -5,12 +5,11 @@ import { withRouter } from "react-router-dom";
 import { Typography, Grid, withStyles, Button } from "@material-ui/core";
 
 import { useUserData } from "../../hooks";
-import { MessageDialogue } from "../../components";
+import { MessageDialogue, MessagesList } from "../../components";
 import { MessagesActions } from "../../api";
 
 const HomePage = ({ classes, history }) => {
   const [userData] = useUserData(() => history.push("/"));
-
   const [isCreateOpened, setIsCreateOpened] = useState(false);
 
   return (
@@ -37,6 +36,7 @@ const HomePage = ({ classes, history }) => {
               container
               direction="column"
               alignItems="stretch"
+              spacing={3}
               className={classes.messagesContainer}
             >
               <Grid item align="right">
@@ -46,6 +46,9 @@ const HomePage = ({ classes, history }) => {
                 >
                   <Typography variant="body1">Create new message </Typography>
                 </Button>
+              </Grid>
+              <Grid item>
+                <MessagesList />
               </Grid>
             </Grid>
           </Grid>
