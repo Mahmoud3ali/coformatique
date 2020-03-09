@@ -6,6 +6,7 @@ async function createMessage({ messageData }) {
 }
 
 async function listMessages() {
+  http.setJwt(localStorage.getItem("jwtToken"));
   const response = await http.get(`api/messages`);
   return response;
 }
