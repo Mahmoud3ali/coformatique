@@ -10,10 +10,11 @@ import {
   Button
 } from "@material-ui/core";
 
-import { AuthActions } from "../../api";
+import { UsersActions } from "../../api";
 
 const LoginPage = ({ history, classes }) => {
   const [userData, setUserData] = useState({
+    name: "",
     email: "",
     password: ""
   });
@@ -35,6 +36,19 @@ const LoginPage = ({ history, classes }) => {
         >
           Guestbook
         </Typography>
+      </Grid>
+      <Grid item>
+        <TextField
+          placeholder="Name"
+          type="name"
+          fullWidth
+          value={userData.name}
+          onChange={e => {
+            setUserData({ ...userData, name: e.target.value });
+          }}
+          variant="outlined"
+          autoComplete="name"
+        />
       </Grid>
       <Grid item>
         <TextField
@@ -68,23 +82,21 @@ const LoginPage = ({ history, classes }) => {
       <Grid item>
         <Grid container justify="space-between">
           <Grid item>
-            <Button variant="outlined" onClick={() => history.push("/signup")}>
-              Sign up instead
+            <Button variant="outlined" onClick={() => history.push("/")}>
+              Login instead
             </Button>
           </Grid>
           <Grid item>
             <Button
               variant="outlined"
               onClick={() => {
-                AuthActions.loginUser({
+                UsersActions.createUser({
                   userData,
-                  callback: () => {
-                    history.push("/home");
-                  }
+                  callback: () => history.push("/")
                 });
               }}
             >
-              Login
+              Submit
             </Button>
           </Grid>
         </Grid>
