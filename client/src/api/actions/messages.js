@@ -9,6 +9,15 @@ const createMessage = async ({ messageData, callback }) => {
   }
 };
 
+const createMessageReply = async ({ replyData, messageId, callback }) => {
+  try {
+    await MessagesServices.createMessageReply({ replyData, messageId });
+    if (callback) callback();
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 const editMessage = async ({ messageId, messageData, callback }) => {
   try {
     await MessagesServices.editMessage({ messageId, messageData });
@@ -29,6 +38,7 @@ const listMessages = async ({ callback }) => {
 
 export default {
   createMessage,
+  createMessageReply,
   editMessage,
   listMessages
 };

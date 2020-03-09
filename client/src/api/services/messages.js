@@ -5,6 +5,11 @@ async function createMessage({ messageData }) {
   return response;
 }
 
+async function createMessageReply({ messageId, replyData }) {
+  const response = await http.post(`api/messages/${messageId}/reply`, replyData);
+  return response;
+}
+
 async function editMessage({ messageId, messageData }) {
   const response = await http.patch(`api/messages/${messageId}`, messageData);
   return response;
@@ -18,6 +23,7 @@ async function listMessages() {
 
 export default {
   createMessage,
+  createMessageReply,
   editMessage,
   listMessages
 };
