@@ -11,8 +11,8 @@ const createMessage = async ({ messageData, callback }) => {
 
 const listMessages = async ({ callback }) => {
   try {
-    await MessagesServices.listMessages();
-    if (callback) callback();
+    const { data } = await MessagesServices.listMessages();
+    if (callback) callback(data);
   } catch (error) {
     console.error(error);
   }
