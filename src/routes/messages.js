@@ -59,6 +59,25 @@ router.post(
   }
 );
 
+// @route    GET api/messages
+// @desc     List user messages
+// @access   Private
+router.get("/", authorize, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const messages = await Message.find({ targetId: userId }).populate(
+      "targetId creatorId",
+      "name _id"
+    );
+    res.status(OK).send(messages);
+  } catch (err) {
+    console.error(err.message);
+    res
+      .status(INTERNAL_SERVER_ERROR)
+      .send({ message: "Internal error, please report" });
+  }
+});
+
 // @route    PATCH api/messages/:id
 // @desc     Edit a message
 // @access   Private
